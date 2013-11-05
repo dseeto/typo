@@ -80,6 +80,7 @@ class Article < Content
     merged.title = self.title
     merged.author = self.author
     merged.comments = self.comments.concat(other.comments)
+    merged.user = self.user
     merged.save
     other.destroy
     self.destroy
