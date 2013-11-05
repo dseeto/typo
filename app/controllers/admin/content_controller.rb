@@ -5,6 +5,17 @@ class Admin::ContentController < Admin::BaseController
   layout "administration", :except => [:show, :autosave]
 
   cache_sweeper :blog_sweeper
+  
+  def merge
+    article = Article.find_by_id(params[:id])
+    merged = article.merge_with(params[:merge_with])
+    if merged
+      set_the_flash
+    else
+      flash[:notice] = "Merging article does not exist."
+    end
+    redirect_to :action => 'index'
+  end 
 
   def auto_complete_for_article_keywords
     @items = Tag.find_with_char params[:article][:keywords].strip
@@ -15,7 +26,6 @@ class Admin::ContentController < Admin::BaseController
     @search = params[:search] ? params[:search] : {}
     
     @articles = Article.search_with_pagination(@search, {:page => params[:page], :per_page => this_blog.admin_display_elements})
-
     if request.xhr?
       render :partial => 'article_list', :locals => { :articles => @articles }
     else
@@ -189,6 +199,8 @@ class Admin::ContentController < Admin::BaseController
       flash[:notice] = _('Article was successfully created')
     when 'edit'
       flash[:notice] = _('Article was successfully updated.')
+    when 'merge'
+      flash[:notice] = _('Article was successfully merged.')
     else
       raise "I don't know how to tidy up action: #{params[:action]}"
     end
@@ -240,4 +252,5 @@ class Admin::ContentController < Admin::BaseController
   def setup_resources
     @resources = Resource.by_created_at
   end
+
 end

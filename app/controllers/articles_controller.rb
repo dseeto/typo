@@ -279,5 +279,5 @@ class ArticlesController < ContentController
       #Not really good.
       # TODO :Check in request_article type of DATA made in next step
     end
-  end
+  end	
 end
