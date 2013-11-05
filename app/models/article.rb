@@ -71,6 +71,19 @@ class Article < Content
     end
   end
 
+  def merge_with(article_id)
+    other = Article.find_by_id(article_id)
+    return other unless other
+    merged_content = self.body.to_s + other.body.to_s
+    merged = Article.get_or_build_article
+    merged.body = merged_content
+    merged.title = self.title
+    merged.author = self.author
+    merged.comments = self.comments.concat(other.comments)
+    merged.save
+    return merged
+  end
+  
   def set_permalink
     return if self.state == 'draft'
     self.permalink = self.title.to_permalink if self.permalink.nil? or self.permalink.empty?
@@ -466,16 +479,5 @@ class Article < Content
     to = to - 1 # pull off 1 second so we don't overlap onto the next day
     return from..to
   end
-  def merge_with(article_id)
-    other = Article.find_by_id(article_id)
-    return other unless other
-    merged_content = self.body.to_s + other.body.to_s
-    merged = Article.get_or_build_article
-    merged.body = merged_content
-    merged.title = self.title
-    merged.author = self.author
-    merged.comments = self.comments.concat(other.comments)
-    merged.save
-    return merged
-  end
+
 end
