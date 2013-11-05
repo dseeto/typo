@@ -98,3 +98,6 @@ irc: xal
 
 Enjoy,
 The Typo team
+
+un: admin
+pw: stmdT6z
